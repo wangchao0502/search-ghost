@@ -1,0 +1,85 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "search-ghost"
+version = "0.1.0"
+description = "Local-first personal knowledge base with hybrid search, knowledge graph, and LLM-powered RAG chat"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    # Web framework
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "python-multipart>=0.0.9",
+
+    # Data validation
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.3.0",
+
+    # Storage
+    "lancedb>=0.10.0",
+    "aiosqlite>=0.20.0",
+    "fsspec>=2024.6.0",
+    "s3fs>=2024.6.0",
+
+    # Embeddings + LLM
+    "litellm>=1.40.0",
+    "openai>=1.35.0",
+
+    # Document parsing (Phase 1: markdown only)
+    "mistune>=3.0.0",
+
+    # Utilities
+    "typer>=0.12.0",
+    "rich>=13.7.0",
+    "httpx>=0.27.0",
+    "python-dateutil>=2.9.0",
+    "anyio>=4.4.0",
+    "watchfiles>=0.22.0",
+]
+
+[project.optional-dependencies]
+multimodal = [
+    "docling>=2.0.0",
+    "paddleocr>=2.7.0",
+    "faster-whisper>=1.0.0",
+]
+distributed = [
+    "getdaft>=0.3.0",
+    "ray>=2.20.0",
+]
+graph = [
+    "lightrag-hku>=1.0.0",
+]
+dev = [
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+    "httpx>=0.27.0",
+]
+
+[project.scripts]
+ghost = "search_ghost.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/search_ghost"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+src = ["src"]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+ignore_missing_imports = true
